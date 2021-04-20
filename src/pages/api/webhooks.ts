@@ -49,7 +49,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             const checkoutSession = event.data.object as Stripe.Checkout.Session
 
             await saveSubscription(
-              checkoutSession.subscription.toString
+              checkoutSession.subscription.toString(),
+              checkoutSession.customer.toString()
             )
           default:
             throw new Error("Unhandled event.")
@@ -57,8 +58,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       } catch {
         return res.json({ error: 'Webhook handle failed.' })
       }
-    } else {
-      console.log('Evento ignorado', type)
     }
 
     res.json({ received: true })
